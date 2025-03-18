@@ -1,4 +1,4 @@
-name: book-chapter7
+name: book-nlp-with-transormers-ch7
 channels:
   - pytorch
   - defaults
