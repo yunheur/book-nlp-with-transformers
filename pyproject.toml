@@ -1,0 +1,75 @@
+[project]
+name = "book-nlp-with-transformers"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "yunheur",email = "yunheur@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+
+[tool.poetry]
+package-mode = false  # Disable package mode
+
+[[tool.poetry.source]]
+name = "pypi"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu118"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "torch-scatter"
+url = "https://data.pyg.org/whl/torch-2.1.0+cu118.html"
+priority = "supplemental"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+tensorflow = "2.14" # rtx 3090 지원 버전
+numpy = "^1.26" # tensorflow 2.14 지원 버전
+torch = {version = "^2.6.0", source = "pytorch"} # rtx 3090 지원 버전
+torchvision = {version = "^0.21.0", source = "pytorch"} # rtx 3090 지원 버전
+torchaudio = {version = "^2.6.0", source = "pytorch"} # rtx 3090 지원 버전
+torch-scatter = {version = "^2.1.2", source = "torch-scatter"} # rtx 3090 지원 버전
+git-lfs = "^1.6"
+soundfile = "^0.13.1"
+# Base requirements
+transformers = {extras = ["onnxruntime", "optuna", "sentencepiece", "sklearn", "tf", "torch", "vision"], version = "4.34.1"}
+accelerate = "0.20.3" # transformers가 요구하는 최소 버전으로 맞춤
+matplotlib = "^3.10.1"
+datasets = {version = "2.14.7", extras = ["audio"]}
+# Chapter 2 - Classification
+umap-learn = "0.5.1"
+wandb = "0.18.7"
+# Chapter 3 - Anatomy
+bertviz = "1.2.0"
+# Chapter 4 - NER
+seqeval = "1.2.2"
+# Chapter 6 - Summarization
+nltk = "3.6.6"
+sacrebleu = "1.5.1"
+rouge-score = "^0.1.2"
+evaluate = "^0.4.3"
+py7zr = "^0.22.0"
+# Chapter 7 - Question Answering
+haystack = "^0.42"
+farm-haystack = {version = "1.22.1", extras = ["elasticsearch7", "inference"]}
+# Chapter 9 - Few labels
+nlpaug = "1.1.7"
+scikit-multilearn = "0.2.0"
+# Chapter 10 - Pretraining
+psutil = "^7.0.0"
+optuna = "^4.2.1"
+onnxruntime = "^1.21.0"
+onnx = "^1.17.0"
+faiss-cpu = "1.7.4"
+
+[tool.poetry.group.dev.dependencies]
+notebook = "^7.3.3"
+ipykernel = "^6.29.5"
+ipywidgets = "^8.1.5"

@@ -130,3 +130,13 @@ dmypy.json
 
 # PyCharm
 .idea
+
+# Outputs
+wandb
+bert-base-uncased-issues-128
+distilbert-base-uncased-*
+elasticsearch-7.9.2
+onnx
+pegasus-samsum
+results
+xlm-roberta-base-finetuned-panx-*
