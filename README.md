@@ -211,13 +211,19 @@ jupyter의 --paths 옵션을 사용하면 주피터 노트북이 참조하는 �
 wsl2 성능 cpu와 ram을 최대치로 쓸 수 있게 변경
 https://kangmanjoo.tistory.com/56
 
----
+# Setup - Window 11
 
-tensorflow는 윈도우 GPU 지원을 2.10 이하 버전까지 지원한다. 윈도우에서 tensorflow를 사용하려면 wsl을 사용할 수 밖에 없다..
-아래까지 윈도우에서 tenserflow를 지원하지 않는다라는 것을 모를 때까지 진행한 내용이다. 
+## 요약
+Windows 11에서 Rtx3090으로 tensorflow GPU 사용을 할 수 없어서 tensorflow GPU를 사용하는 것은 불가능함.</br>
+Rtx3090은 CUDA 11.8버전과 cuDNN 8.6, 8.7 버전과 호환됨</br>
+tensorflow는 [Windows](https://www.tensorflow.org/install/source_windows?hl=ko&_gl=1*1wieu6p*_up*MQ..*_ga*MTkxNDA4Mjg0NS4xNzQzODQwNzg2*_ga_W0YLR4190T*MTc0Mzg0MDc4NS4xLjAuMTc0Mzg0MDc4NS4wLjAuMA..#gpu)에서 GPU지원은 2.10이하 버전(CUDA 버전은 11.2)까지만 지원함. </br>
+CUDA 11.8 버전을 사용하려면 Linux/Mac OS 사용해야함.
 
-CuDA, cuDNN, pytorch 설치
-참고
+## 메모
+
+아래 내용을 참고하여, CuDA, cuDNN, pytorch를 설치하고, tenserflow를 설치할 때 사용하는 그래픽카드를 미지원한다는 것을 알게됨.
+
+### 참고자료
 - [Pytorch 설치 - CUDA Toolkit, cuDNN 설치](https://stat-thon.tistory.com/104) :  CUDA Toolkit, cuDNN 다운로드 방법
   ```
   nvcc --version # CUDA Toolkit 버전 확인
@@ -227,14 +233,18 @@ CuDA, cuDNN, pytorch 설치
   ```
   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
   ```
-주의사항
+
+### 주의사항
 - GPU와 호환되는 CUDA Toolkit 버전으로 설치해야한다. ([호환 버전 확인](https://pytorch.org/get-started/locally/), [CUDA Toolkit Archive](https://developer.nvidia.com/cuda-toolkit-archive))
+
+### 개념
 - CUDA : GPU에서 병렬 연산을 가능하게 해주는 플랫폼
 - cuDNN : 딥러닝 연산을 최적화한 CUDA 라이브러리. 따라서 딥러닝을 GPU에서 실행하려면 CUDA와 함께 cuDNN도 반드시 설치해야 합니다.
 
-UniGetUI로 다음의 패키지를 설치 : wget
 
-문제 : 아래와 같이 명령어 출력이 깨짐. 
+### 문제해결
+
+**아래와 같이 명령어 출력이 깨짐.**
 ```
 'head'��(��) ���� �Ǵ� �ܺ� ����, ������ �� �ִ� ���α׷�, �Ǵ� ��ġ ������ �ƴմϴ�.
 ```
