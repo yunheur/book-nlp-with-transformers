@@ -454,7 +454,7 @@ c.ServerApp.max_buffer_size = 10737418240 # 10GB
 ---
 *CH6*
 
-![image.png](attachment:1ab31feb-444c-4ec6-a5aa-894eed1cc1fc:image.png)
+![image](https://github.com/user-attachments/assets/19c854e6-a3c7-469d-a49e-636d88cd6ddf)
 
 ```bash
 rouge-score = "0.0.4"
@@ -503,7 +503,7 @@ evaluate = "^0.4.3"
 
 3. docker로 실행한 es가 띄우면 죽음 (`TODO`)
 
-    ![image.png](attachment:f3dab9a3-234f-408a-aaa5-d1845544c637:image.png)
+    ![image](https://github.com/user-attachments/assets/4b91f651-5d39-47f2-9d86-5337215a07ea)
 
 </br>
 
