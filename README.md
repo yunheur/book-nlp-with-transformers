@@ -167,7 +167,10 @@ RTX 3090은 [CUDA 위키피디아](https://en.wikipedia.org/wiki/CUDA#GPUs_suppo
 ![image](https://github.com/user-attachments/assets/f567662e-357c-4dd9-9f7f-479b0bf0717f)
 
 CUDA 11.8을 선택한 이유 파이토치
+![image](https://github.com/user-attachments/assets/97b12777-5d3e-4f9f-b883-f83807ea8f65)
+
 cuDNN 8.7을 선택한 이유 텐서플로우
+![image](https://github.com/user-attachments/assets/537dae4d-c02e-4f49-add4-49cd8815d234)
 
 
 
