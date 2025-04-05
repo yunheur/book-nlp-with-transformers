@@ -207,8 +207,10 @@ $ nvcc --version
 ```
 
 ### 4. cuDNN 8.7 설치
-순서
+**설치방법**
 1. [cnDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)에서 CUDA Toolkit 버전과 호환되는 것을 다운로드한다.
+1. Ubuntu 홈으로 파일을 옮긴다.
+1. 아래 명령어를 실행한다. 
     ```sh
     # 8.7 버전
     $ sudo apt-get install zlib1g
@@ -242,7 +244,7 @@ $ nvcc --version
     $ sudo apt upgrade
     ```
 
-tensorflow와 torch가 의존하는 typing-extensions 버전 충돌 문제 해결
+**tensorflow와 torch가 의존하는 typing-extensions 버전 충돌 문제 해결**
 - 문제 : 아래와 같이 요구하는 버전이 다름
     - pyTorch : typing-extensions==4.10.0
     - tensorflow : typing-extensions==4.5.0
@@ -252,20 +254,136 @@ tensorflow와 torch가 의존하는 typing-extensions 버전 충돌 문제 해�
     - torch==2.6.0+cu118
     - cuda 버전 : 11.8
     - cuDNN 버전 : 8.6
-- 가정 : tensoflow를 2.14.0, cuDNN을 8.7로 올리면  typing-extensions 버전 충돌이 발생하지 않을 것이다. 
+- 결과 : tensoflow를 2.14.0, cuDNN을 8.7로 올리면  typing-extensions 버전 충돌이 발생하지 않을 것이다라는 가정으로 버전업을 했고 해결됨
     - [pyTorch==2.6.0](https://pypi.org/pypi/torch/2.6.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions>=4.10.0",
     - [tensoflow==2.13.0](https://pypi.org/pypi/tensorflow/2.13.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (<4.6.0,>=3.6.6)",
     - [tensorflow==2.14.0](https://pypi.org/pypi/tensorflow/2.14.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (>=3.6.6)",
-![image](https://github.com/user-attachments/assets/854bf5a1-af04-419d-8982-b57652b3bf47)
+    - [tensorflow 버전 리스트](https://www.tensorflow.org/install/source?hl=ko#gpu_support_2)
+        ![image](https://github.com/user-attachments/assets/854bf5a1-af04-419d-8982-b57652b3bf47)
 
-
-참고
+**참고**
 - [WSL2에 CUDA 설치하는 방법](https://webnautes.tistory.com/1848)
 - [ammarsufyan/How to install CUDA-11.8 and CUDNN-8.6 for TensorFlow-2.13 in WSL2-Ubuntu-22.04-LTS.md](https://gist.github.com/ammarsufyan/51dd12d9471eb73b2348d373b605b45a)
 - [[Linux] Ubuntu 22.04 NVIDIA 드라이버 + CUDA + cuDNN 설치하기](https://starlane.tistory.com/1)
 
+### 5. pyenv 설치
+
+pyenv는 python version manager이다. node.js에서 따지면 nvm이라고 할 수 있겠다.
+
+**설치방법**
+
+https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv
+```sh
+$ git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+
+$ echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+$ echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+$ echo 'eval "$(pyenv init - zsh)"' >> ~/.zshrc
+
+$ source ~/.zshrc
+
+$ pyenv --version
+pyenv 2.5.4-1-gc579b636
+
+# 빌드 도구 밒 라이브러리 설치
+sudo apt update; sudo apt install build-essential libssl-dev zlib1g-dev \
+libbz2-dev libreadline-dev libsqlite3-dev curl git \
+libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+```
+
+**배경**
+- conda에 패키지가 별로 없어서 pip 패키지를 같이 사용하는데 패키지 의존성 관리가 전혀 안됨. 패키지 삭제시 관련된 패키지들이 삭제가 안됨.
+
+**참고**
+- [conda는 이제 그만 쓸래요 - pyenv & poetry](https://velog.io/@snoop2head/no-more-conda-please-pyenv-poetry-please)
+
+### 6. pyenv-virtualenv 설치
+https://github.com/pyenv/pyenv-virtualenv
+```
+$ git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+
+$ echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+$ source ~/.zshrc
+
+$ pyenv virtualenvs
+```
+
+### 7. virtualenv 가상환경 생성 및 활성화
+
+```sh
+# 가상환경 생성 및 활성화
+pyenv virtualenv 3.10 book-nlp-with-transormers
+pyenv activate book-nlp-with-transormers
+python --version
+pip list
+
+#upgrade pip
+pip install --upgrade pip
+```
+
+특정 repository에 들어가면 virtual environment가 자동으로 실행되게 만들고 싶으면 다음과 같이 실행하면 된다.
+```sh
+# cd [REPOSITORY_PATH]
+cd ~/Repository/book-nlp-with-transformers 
+# pyenv local [ENVIRONMENT_NAME]
+pyenv local book-nlp-with-transormers
+
+# 특정 디렉토리(프로젝트)에서 사용하는 가상환경 확인
+pyenv versions
+```
+
+### 8. poetry 설치 및 프로젝트 초기화
+
+poetry는 각 프로젝트의 package version들을 명시하고, dependency들을 관리한다. node.js에서 따지면 npm이라고 할 수 있겠다.
+```sh
+pip install poetry
+```
+
+project repository로 가서 poetry 사용하도록 초기화한다. 
+```sh
+poetry init
+```
+
+**참고**
+- [poetry install 시 경고 메시지 안나오게 처리](https://blog.naver.com/drvoss/223523052028)
+- [python - poetry 설치부터 project initializing, 활용하기](https://velog.io/@qlgks1/python-poetry-%EC%84%A4%EC%B9%98%EB%B6%80%ED%84%B0-project-initializing-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0)
+- https://python-poetry.org/docs/pyproject/#dependencies-and-dependency-groups
+- [poetry 의 거의 모든것 (튜토리얼)](https://teddylee777.github.io/poetry/poetry-tutorial/)
+
+### 9. python 3.10 설치
+
+```sh
+pyenv install --list | grep 3.10 # 설치할 버전 확인하려면 해당 명령어 실행
+pyenv install 3.10
+pyenv versions # 설치된 파이썬 버전 확인
+```
+
+**문제**
+
+onnxruntime 1.20.1 버전 지원 문제 : poetry 사용시 onnxruntime 1.20.1이 python 3.9에서 설치안되서 3.10으로 올림
+- https://github.com/python-poetry/poetry/issues/10151
+
+### 10. 패키지 설치
+
+tensorflow 설치
 
 
+### torch 설치
+
+
+### torch-scatter 설치
+
+### 개발용 패키지 설치
+
+
+### 실습용 패키지 설치
+
+### 
+
+
+
+</br>
 
 # Setup - Window 11 (실패)
 
