@@ -162,13 +162,13 @@ prompt_context() {
 
 ### 2. 그래픽카드를 지원하는 CUDA, cuDNN 버전 확인
 
-[CUDA 위키피디아](https://en.wikipedia.org/wiki/CUDA#GPUs_supported)에서 RTX 3090을 검색하니, cuDNN은 8.6과 8.7버전을 지원하고 CUDA는 11.8 버전을 
+RTX 3090은 [CUDA 위키피디아](https://en.wikipedia.org/wiki/CUDA#GPUs_supported)에서 확인해보니 cuDNN은 8.6과 8.7버전을 지원하고 CUDA는 11.1이상 11.7.1이하의 버전을 지원함.
+![image](https://github.com/user-attachments/assets/d690e21f-94a4-4596-a2ab-39b11e25afbc)
+![image](https://github.com/user-attachments/assets/f567662e-357c-4dd9-9f7f-479b0bf0717f)
 
 CUDA 11.8을 선택한 이유 파이토치
 cuDNN 8.7을 선택한 이유 텐서플로우
 
-![image](https://github.com/user-attachments/assets/d690e21f-94a4-4596-a2ab-39b11e25afbc)
-![image](https://github.com/user-attachments/assets/f567662e-357c-4dd9-9f7f-479b0bf0717f)
 
 
 
