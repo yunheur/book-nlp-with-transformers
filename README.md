@@ -165,15 +165,12 @@ prompt_context() {
 RTX 3090은 [CUDA 위키피디아](https://en.wikipedia.org/wiki/CUDA#GPUs_supported)에서 확인해보니 cuDNN은 8.6과 8.7버전을 지원하고 CUDA는 11.1이상 11.7.1이하의 버전을 지원함.
 ![image](https://github.com/user-attachments/assets/d690e21f-94a4-4596-a2ab-39b11e25afbc)
 ![image](https://github.com/user-attachments/assets/f567662e-357c-4dd9-9f7f-479b0bf0717f)
-
-CUDA 11.8을 선택한 이유 파이토치
+</br></br>
+하지만 PyTorch는 CUDA 버전을 11.8, 12.3, 12.6 버전만 지원해서 11.8을 설치함. 사용에 문제는 없었음.
 ![image](https://github.com/user-attachments/assets/97b12777-5d3e-4f9f-b883-f83807ea8f65)
-
-cuDNN 8.7을 선택한 이유 텐서플로우
+</br></br>
+cuDNN은 8.7버전을 설치함. tensorflow와 torch가 의존하는 typing-extensions에서 버전 충돌이 발생하여 tensorflow 버전을 2.14.0으로 올리면서 파이썬 버전을 3.9에서 3.10로 올리고 cuDNN 버전을 8.6에서 8.7로 올림
 ![image](https://github.com/user-attachments/assets/537dae4d-c02e-4f49-add4-49cd8815d234)
-
-
-
 
 ### 3. CUDA Toolkit 11.8 설치
 ```sh
@@ -209,27 +206,57 @@ $ source ~/.zshrc
 $ nvcc --version
 ```
 
-cuDNN 8.6 설치
-[cnDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)에서 CUDA Toolkit 버전과 호환되는 것을 다운로드한다.
-```sh
-$ sudo apt-get install zlib1g
-$ tar -xvf cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz
-# /usr/local/cuda 경로로 파일 복사
-$ sudo cp cudnn-*-archive/include/cudnn*.h /usr/local/cuda/include 
-$ sudo cp -P cudnn-*-archive/lib/libcudnn* /usr/local/cuda/lib64 
-$ sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
-#  설치된 cuDNN 버전 확인
-$ cat /usr/local/cuda/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
-#define CUDNN_MAJOR 8
-#define CUDNN_MINOR 6
-#define CUDNN_PATCHLEVEL 0
-```
+### 4. cuDNN 8.7 설치
+순서
+1. [cnDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)에서 CUDA Toolkit 버전과 호환되는 것을 다운로드한다.
+    ```sh
+    # 8.7 버전
+    $ sudo apt-get install zlib1g
+    $ tar -xvf cudnn-linux-x86_64-8.7.0.84_cuda11-archive.tar.xz
+    # /usr/local/cuda 경로로 파일 복사
+    $ sudo cp cudnn-*-archive/include/cudnn*.h /usr/local/cuda/include 
+    $ sudo cp -P cudnn-*-archive/lib/libcudnn* /usr/local/cuda/lib64 
+    $ sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+    #  설치된 cuDNN 버전 확인
+    $ cat /usr/local/cuda/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
+    #define CUDNN_MAJOR 8
+    #define CUDNN_MINOR 7
+    #define CUDNN_PATCHLEVEL 0
 
-일부 종속성 업데이트
-```
-$ sudo apt update
-$ sudo apt upgrade
-```
+    # 8.6 버전 (기록용)
+    $ sudo apt-get install zlib1g
+    $ tar -xvf cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz
+    # /usr/local/cuda 경로로 파일 복사
+    $ sudo cp cudnn-*-archive/include/cudnn*.h /usr/local/cuda/include 
+    $ sudo cp -P cudnn-*-archive/lib/libcudnn* /usr/local/cuda/lib64 
+    $ sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+    #  설치된 cuDNN 버전 확인
+    $ cat /usr/local/cuda/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
+    #define CUDNN_MAJOR 8
+    #define CUDNN_MINOR 6
+    #define CUDNN_PATCHLEVEL 0
+    ```
+1. 일부 종속성 업데이트
+    ```
+    $ sudo apt update
+    $ sudo apt upgrade
+    ```
+
+tensorflow와 torch가 의존하는 typing-extensions 버전 충돌 문제 해결
+- 문제 : 아래와 같이 요구하는 버전이 다름
+    - pyTorch : typing-extensions==4.10.0
+    - tensorflow : typing-extensions==4.5.0
+- 현황
+    - python==3.9.1
+    - tensoflow==2.13
+    - torch==2.6.0+cu118
+    - cuda 버전 : 11.8
+    - cuDNN 버전 : 8.6
+- 가정 : tensoflow를 2.14.0, cuDNN을 8.7로 올리면  typing-extensions 버전 충돌이 발생하지 않을 것이다. 
+    - [pyTorch==2.6.0](https://pypi.org/pypi/torch/2.6.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions>=4.10.0",
+    - [tensoflow==2.13.0](https://pypi.org/pypi/tensorflow/2.13.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (<4.6.0,>=3.6.6)",
+    - [tensorflow==2.14.0](https://pypi.org/pypi/tensorflow/2.14.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (>=3.6.6)",
+
 
 참고
 - [WSL2에 CUDA 설치하는 방법](https://webnautes.tistory.com/1848)
