@@ -8,55 +8,8 @@
 
 로컬 컴퓨터에서 실행하려면 저장소를 클론하고 파이썬 가상 환경이나 콘다 환경을 만들어 실행하세요. 이 책의 코드는 라이브러리 버전에 따라 실행 결과가 달라질 수 있으므로 로컬에서 실행하는 경우 구글 코랩의 라이브러리 버전을 참고하세요.
 
-## Setup (Windows 11)
-
-후속작업
-- 윈도우에 설치한 프로그램 제거
-
-
-Miniconda 설치
-
-```
-$ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-$ sudo chmod +x Miniconda3-latest-Linux-x86_64.sh
-$ bash Miniconda3-latest-Linux-x86_64.sh
-# 엔터 > q > yes 입력 후 엔터 > 엔터 > yes 입력 후 엔터
-# 새 탭을 띄우면 base 환경으로 활성화됨.
-```
-
-참고
-- [Visual Studio Code와 Miniconda를 사용한 Python 개발 환경 만들기( Windows, Ubuntu, WSL2)](https://webnautes.tistory.com/1842)
-
-
-가상환경 생성
-```sh
-$ conda create -n book-nlp-with-transormers python=3.9      
-$ conda activate book-nlp-with-transormers
-```
-Jupyter Notebook 관련 패키지 설치
-```sh
-$ conda install notebook ipykernel ipywidgets
-```
-git-lfs(Large File Storage) 설치
-```sh
-$ conda install git-lfs
-```
-libsndfile 설치 (오디오 파일 처리)
-```sh
-$ conda install -c conda-forge libsndfile
-```
-pyTorch와 텐서플로우는 typing-extensions 버전 충돌이 난다.
-- pyTorch : typing-extensions==4.10.0
-- tenserflow : typing-extensions==4.5.0
-
-가상환경을 분리해서 사용한다.
-
-pyTorch용 가상환경 생성
-```
-conda create -n book-nlp-with-transormers-torch --clone book-nlp-with-transormers
-conda activate book-nlp-with-transormers-torch
-```
 pyTorch 설치 ([설치 명령어](https://pytorch.org/))
+
 ```sh
 $ pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 # GPU 지원하는지 확인
@@ -64,22 +17,28 @@ $ python -c "import torch; print(torch.cuda.is_available()); print(torch.cuda.ge
 True
 NVIDIA GeForce RTX 3090
 ```
-pytorch-scatter 설치 ([설치 명령어](https://pypi.org/project/torch-scatter/))
+
+pytorch-scatter 설치
+
 ```sh
-$ pip install torch-scatter -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
+pip install torch-scatter -f https://data.pyg.org/whl/torch-2.1.0+cu118.html
 ```
+
 tersorflow 설치 : torch와 같이 실행하는 코드가 있어서 설치함 (cpu로 동작)
+
 ```
-$ pip install tersorflow
+pip install tersorflow
 ```
 
 tensorflow용 가상환경 생성
+
 ```
-$ conda create -n book-nlp-with-transormers-tenserflow --clone book-nlp-with-transormers
-$ conda activate book-nlp-with-transormers-tenserflow
+conda create -n book-nlp-with-transormers-tenserflow --clone book-nlp-with-transormers
+conda activate book-nlp-with-transormers-tenserflow
 ```
 
 텐서플로우 2.13 설치 ([버전 확인](https://www.tensorflow.org/install/source?hl=ko&_gl=1*35wvgm*_up*MQ..*_ga*MjA4MTk1MTY5NS4xNzQyNjQ2MDE3*_ga_W0YLR4190T*MTc0MjY0NjAxNy4xLjAuMTc0MjY0NjAxNy4wLjAuMA..))
+
 ```sh
 $ pip install --upgrade pip
 $ pip install tensorflow==2.13
@@ -90,28 +49,31 @@ $ python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GP
 ```
 
 torch와 tenserflow 가상환경에 추가로 패키지 설치
+
 ```
 pip install transformers datasets accelerate sentencepiece sacremoses umap-learn bertviz seqeval sacrebleu rouge-score nltk py7zr haystack optuna onnxruntime onnx nlpaug scikit-multilearn psutil wandb matplotlib tf_keras
 ```
 
-
 참고
-- [WSL2에 CUDA 사용하는 Tensorflow 설치하는 방법](https://webnautes.tistory.com/1873)
 
+- [WSL2에 CUDA 사용하는 Tensorflow 설치하는 방법](https://webnautes.tistory.com/1873)
 
 ## 주제별 해보고 정리
 
 torch와 tenserflow를 둘 다 gpu로 쓸 수 있게 하기
 
 커널 충돌 문제
+
 ```
 현재 셀 또는 이전 셀에서 코드를 실행하는 동안 Kernel이 충돌했습니다. 
 셀의 코드를 검토하여 가능한 오류 원인을 식별하세요. 
 자세한 내용을 보려면 여기를 클릭하세요. 
 자세한 내용은 Jupyter 로그를 참조하세요.
 ```
+
 시도
-```
+
+```sh
 conda activate book-nlp-with-transormers-torch
 # 설정파일 생성
 $ jupyter notebook --generate-config
@@ -123,15 +85,16 @@ c.ServerApp.max_buffer_size = 10737418240 # 10GB
 ...
 ```
 
-
 jupyter의 --paths 옵션을 사용하면 주피터 노트북이 참조하는 환경설정(config)파일들의 경로와 data파일의 경로들이 우선순위 순서로 출력됩니다. 각각 기능(config, data, runtime)별로 가장 위에 있는 경로에 들어가셔서 커스텀을 진행하면 됩니다.
-```
+
+```sh
 !jupyter --paths
 ```
-참고 : https://bio-info.tistory.com/107
+
+참고 : <https://bio-info.tistory.com/107>
 
 wsl2 성능 cpu와 ram을 최대치로 쓸 수 있게 변경
-https://kangmanjoo.tistory.com/56
+<https://kangmanjoo.tistory.com/56>
 
 # Setup - Ubuntu 24.04
 
@@ -143,12 +106,15 @@ pyenv & poetry를 사용한 이유는 miniconda를 설치 후 예제에서 사�
 ## 설치과정
 
 ### 1. wsl2 설치
+
 관리자 권한의 터미널(PowerShell)에서 wsl2 설치 ([공식 설치 가이드](https://learn.microsoft.com/ko-kr/windows/wsl/install))
-```
+
+```sh
 wsl --install
 ```
 
 zsh 설치 및 설정
+
 ```sh
 # ~/.zshrc
 ...
@@ -173,11 +139,14 @@ cuDNN은 8.7버전을 설치함. tensorflow와 torch가 의존하는 typing-exte
 ![image](https://github.com/user-attachments/assets/537dae4d-c02e-4f49-add4-49cd8815d234)
 
 ### 3. CUDA Toolkit 11.8 설치
+
 ```sh
 # CPU 아키텍처 확인
 uname -m
 ```
+
 [CUDA Toolkit 11.8 Downloads](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local)에서 명령어 대로 설치
+
 ```sh
 # libtinfo5 수동 설치 (Ubuntu 22.04 이상)
 $ wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
@@ -191,6 +160,7 @@ $ sudo cp /var/cuda-repo-wsl-ubuntu-11-8-local/cuda-*-keyring.gpg /usr/share/key
 $ sudo apt-get update
 $ sudo apt-get -y install cuda
 ```
+
 ```sh
 # cuda 버전 확인
 $ ls /usr/local/ | grep cuda
@@ -207,10 +177,13 @@ $ nvcc --version
 ```
 
 ### 4. cuDNN 8.7 설치
+
 **설치방법**
+
 1. [cnDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)에서 CUDA Toolkit 버전과 호환되는 것을 다운로드한다.
 1. Ubuntu 홈으로 파일을 옮긴다.
-1. 아래 명령어를 실행한다. 
+1. 아래 명령어를 실행한다.
+
     ```sh
     # 8.7 버전
     $ sudo apt-get install zlib1g
@@ -238,30 +211,34 @@ $ nvcc --version
     #define CUDNN_MINOR 6
     #define CUDNN_PATCHLEVEL 0
     ```
+
 1. 일부 종속성 업데이트
+
     ```
-    $ sudo apt update
-    $ sudo apt upgrade
+    sudo apt update
+    sudo apt upgrade
     ```
 
 **tensorflow와 torch가 의존하는 typing-extensions 버전 충돌 문제 해결**
+
 - 문제 : 아래와 같이 요구하는 버전이 다름
-    - pyTorch : typing-extensions==4.10.0
-    - tensorflow : typing-extensions==4.5.0
+  - pyTorch : typing-extensions==4.10.0
+  - tensorflow : typing-extensions==4.5.0
 - 현황
-    - python==3.9.1
-    - tensoflow==2.13
-    - torch==2.6.0+cu118
-    - cuda 버전 : 11.8
-    - cuDNN 버전 : 8.6
+  - python==3.9.1
+  - tensoflow==2.13
+  - torch==2.6.0+cu118
+  - cuda 버전 : 11.8
+  - cuDNN 버전 : 8.6
 - 결과 : tensoflow를 2.14.0, cuDNN을 8.7로 올리면  typing-extensions 버전 충돌이 발생하지 않을 것이다라는 가정으로 버전업을 했고 해결됨
-    - [pyTorch==2.6.0](https://pypi.org/pypi/torch/2.6.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions>=4.10.0",
-    - [tensoflow==2.13.0](https://pypi.org/pypi/tensorflow/2.13.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (<4.6.0,>=3.6.6)",
-    - [tensorflow==2.14.0](https://pypi.org/pypi/tensorflow/2.14.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (>=3.6.6)",
-    - [tensorflow 버전 리스트](https://www.tensorflow.org/install/source?hl=ko#gpu_support_2)
+  - [pyTorch==2.6.0](https://pypi.org/pypi/torch/2.6.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions>=4.10.0",
+  - [tensoflow==2.13.0](https://pypi.org/pypi/tensorflow/2.13.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (<4.6.0,>=3.6.6)",
+  - [tensorflow==2.14.0](https://pypi.org/pypi/tensorflow/2.14.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (>=3.6.6)",
+  - [tensorflow 버전 리스트](https://www.tensorflow.org/install/source?hl=ko#gpu_support_2)
         ![image](https://github.com/user-attachments/assets/854bf5a1-af04-419d-8982-b57652b3bf47)
 
 **참고**
+
 - [WSL2에 CUDA 설치하는 방법](https://webnautes.tistory.com/1848)
 - [ammarsufyan/How to install CUDA-11.8 and CUDNN-8.6 for TensorFlow-2.13 in WSL2-Ubuntu-22.04-LTS.md](https://gist.github.com/ammarsufyan/51dd12d9471eb73b2348d373b605b45a)
 - [[Linux] Ubuntu 22.04 NVIDIA 드라이버 + CUDA + cuDNN 설치하기](https://starlane.tistory.com/1)
@@ -272,7 +249,8 @@ pyenv는 python version manager이다. node.js에서 따지면 nvm이라고 할 
 
 **설치방법**
 
-https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv
+<https://github.com/pyenv/pyenv?tab=readme-ov-file#a-getting-pyenv>
+
 ```sh
 $ git clone https://github.com/pyenv/pyenv.git ~/.pyenv
 
@@ -292,21 +270,25 @@ libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-d
 ```
 
 **배경**
+
 - conda에 패키지가 별로 없어서 pip 패키지를 같이 사용하는데 패키지 의존성 관리가 전혀 안됨. 패키지 삭제시 관련된 패키지들이 삭제가 안됨.
 
 **참고**
+
 - [conda는 이제 그만 쓸래요 - pyenv & poetry](https://velog.io/@snoop2head/no-more-conda-please-pyenv-poetry-please)
 
 ### 6. pyenv-virtualenv 설치
-https://github.com/pyenv/pyenv-virtualenv
+
+<https://github.com/pyenv/pyenv-virtualenv>
+
 ```
-$ git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
 
-$ echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 
-$ source ~/.zshrc
+source ~/.zshrc
 
-$ pyenv virtualenvs
+pyenv virtualenvs
 ```
 
 ### 7. virtualenv 가상환경 생성 및 활성화
@@ -323,6 +305,7 @@ pip install --upgrade pip
 ```
 
 특정 repository에 들어가면 virtual environment가 자동으로 실행되게 만들고 싶으면 다음과 같이 실행하면 된다.
+
 ```sh
 # cd [REPOSITORY_PATH]
 cd ~/Repository/book-nlp-with-transformers 
@@ -336,19 +319,22 @@ pyenv versions
 ### 8. poetry 설치 및 프로젝트 초기화
 
 poetry는 각 프로젝트의 package version들을 명시하고, dependency들을 관리한다. node.js에서 따지면 npm이라고 할 수 있겠다.
+
 ```sh
 pip install poetry
 ```
 
-project repository로 가서 poetry 사용하도록 초기화한다. 
+project repository로 가서 poetry 사용하도록 초기화한다.
+
 ```sh
 poetry init
 ```
 
 **참고**
+
 - [poetry install 시 경고 메시지 안나오게 처리](https://blog.naver.com/drvoss/223523052028)
 - [python - poetry 설치부터 project initializing, 활용하기](https://velog.io/@qlgks1/python-poetry-%EC%84%A4%EC%B9%98%EB%B6%80%ED%84%B0-project-initializing-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0)
-- https://python-poetry.org/docs/pyproject/#dependencies-and-dependency-groups
+- <https://python-poetry.org/docs/pyproject/#dependencies-and-dependency-groups>
 - [poetry 의 거의 모든것 (튜토리얼)](https://teddylee777.github.io/poetry/poetry-tutorial/)
 
 ### 9. python 3.10 설치
@@ -362,32 +348,223 @@ pyenv versions # 설치된 파이썬 버전 확인
 **문제**
 
 onnxruntime 1.20.1 버전 지원 문제 : poetry 사용시 onnxruntime 1.20.1이 python 3.9에서 설치안되서 3.10으로 올림
-- https://github.com/python-poetry/poetry/issues/10151
+
+- <https://github.com/python-poetry/poetry/issues/10151>
 
 ### 10. 패키지 설치
 
-tensorflow 설치
+**tensorflow 설치**
 
+1. pyproject.toml 파일 수정
+   - 파이썬 버전의 범위가 3.9 이상으로 잡혀있었는데, tensorflow 설치가 안됨
 
-### torch 설치
+       ```bash
+       requires-python = ">=3.10,<3.11"
+       ```
 
+   - tensorflow==2.14가 numpy 버전을 2 미만으로 지원해서 아래와 같이 추가함
 
-### torch-scatter 설치
+       ```toml
+       [tool.poetry.dependencies]
+       tensorflow = "2.14"
+       numpy = "^1.26"
+       ```
 
-### 개발용 패키지 설치
+2. 패키지 설치
 
+    ```bash
+    $ poetry install
+    $ python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+    ...
+    [PhysicalDevice(name='/physical_device:GPU:0', device_type='GPU')] # 출력되면 정상
+    ```
 
-### 실습용 패키지 설치
+**torch 설치**
 
-### 
+1. pyproject.toml 파일에 추가
 
+    ```bash
+    [[tool.poetry.source]]
+    name = "pypi"
+    priority = "primary"
+    
+    [[tool.poetry.source]]
+    name = "pytorch"
+    url = "https://download.pytorch.org/whl/cu118"
+    priority = "supplemental"
+    ```
 
+2. 패키지 설치 ([설치 명령어](https://pytorch.org/))
+
+    ```bash
+    poetry add torch torchvision torchaudio --source pytorch
+    python -c "import torch; print(torch.cuda.is_available())"
+    ```
+
+**torch-scatter 설치**
+
+1. pyproject.toml 파일에 추가
+
+    ```bash
+    [[tool.poetry.source]]
+    name = "torch-scatter"
+    url = "https://data.pyg.org/whl/torch-2.1.0+cu118.html"
+    priority = "supplemental"
+    ```
+
+2. 패키지 설치 ([설치 명령어](https://pypi.org/project/torch-scatter/))
+
+    ```bash
+    poetry add torch-scatter --source torch-scatter
+    ```
+
+**개발용 패키지 설치**
+
+```bash
+# Jupyter Notebook 관련 패키지 설치
+poetry add -D notebook ipykernel ipywidgets
+```
+
+**실습용 패키지 설치**
+
+```bash
+# git-lfs(Large File Storage) 설치
+poetry add git-lfs
+
+# libsndfile 설치 (오디오 파일 처리) : libsndfile는 conda로 설치해야함. ChatGPT가 soundfile은 내부적으로 libsndfile을 사용한다고 해서 soundfile 설치
+poetry add soundfile
+
+# Base requirements
+#poetry add "transformers[tf,torch,sentencepiece,vision,optuna,sklearn,onnxruntime]==4.11.3"
+# tokenzer 설치안되서 버전 없앰. https://github.com/huggingface/tokenizers/issues/1087
+poetry add "transformers[tf,torch,sentencepiece,vision,optuna,sklearn,onnxruntime]==4.11.3"
+poetry add "datasets[audio]" matplotlib accelerate
+
+# Chapter 1
+#poetry add sacremoses
+
+# Chapter 2 - Classification
+poetry add "umap-learn==0.5.1" "wandb==0.18.7" 
+
+# Chapter 3 - Anatomy
+poetry add "bertviz==1.2.0"
+
+# Chapter 4 - NER
+poetry add "seqeval==1.2.2"
+
+# Chapter 6 - Summarization
+poetry add "nltk==3.6.6" "sacrebleu==1.5.1" "rouge-score==0.1.2" evaluate py7zr
+
+# Chapter 7
+poetry add "farm-haystack[elasticsearch7]=1.22.1" haystack
+
+# Chapter 8
+poetry add optuna onnxruntime onnx
+ 
+# Chapter 9 - Few labels
+poetry add "nlpaug==1.1.7" "scikit-multilearn==0.2.0" "faiss-cpu==1.7.4"
+
+# Chapter 10 - Pretraining
+poetry add psutil 
+```
+
+**문제해결**
+
+*Ch2*
+
+문제 : ValueError: Could not interpret optimizer identifier: <keras.src.optimizers.adam.Adam object at 0x7f5d87b7b490>
+
+해결과정 :
+
+1. ValueError: Could not interpret optimizer identifier: <keras.src.optimizers.adam.Adam object at 0x7f5d87b7b490>
+
+    <https://discuss.huggingface.co/t/pretrain-model-not-accepting-optimizer/76209/26?page=2>
+
+    transformers==4.50.0, accelerate==1.5.2 를 설치하니까 에러 발생함 (25.3.24기준 최신버전)
+
+2. transformers 버전을 4.39.2으로 바꾸니까 다른 에러가 발생함.
+
+    TypeError: Accelerator.**init**() got an unexpected keyword argument 'dispatch_batches'
+
+    accelerate 버전을 0.30.0으로 변경
+
+3. 다시 Adam 에러 발생함
+4. transformers, accelerate 버전을 내릴 수 있을만큼 내려보자
+
+    tensoflow 에서 요구하는 transformers 버전을 확인해보니 2.16미만까지 였음. 책에서는 4.11.3을 쓰고 있음.
+
+    ```bash
+    required by
+     - tensorflow-text requires >=2.14.0,<2.15
+     - transformers requires >=2.6,<2.16
+    ```
+
+    transformers 4.11.3은 tokenizers 0.10.3이 설치가 안됨
+
+    transformers  4.33.1부터 되서 4.33.3 설치 accelerate는 0.20.3 이상이라서 0.20.3으로 설정함
+
+결론 : transformers==4.33.3, accelerate==0.20.3으로 설정하니까 해결됨
+
+---
+*CH6*
+
+![image.png](attachment:1ab31feb-444c-4ec6-a5aa-894eed1cc1fc:image.png)
+
+```bash
+rouge-score = "0.0.4"
+evaluate = "0.4.1"
+```
+
+버전을 올려니 해결됨
+
+```bash
+rouge-score = "^0.1.2"
+evaluate = "^0.4.3"
+```
+
+---
+
+*CH7*
+
+1. farm-haystack을 설치하려고하니 wandb==0.19.8이 pydantic>=2.6,<3을 요구하기 때문에 에러가 발생함.
+
+    [wandb==0.18.7](https://pypi.org/pypi/wandb/0.18.7/json)까지 제약사항이 없었으므로 wandb를 다운그레이드합니다.
+
+2. poetry add fram-haystack를 실행하니 아래와 같은 에러가 발생함.
+
+    ```bash
+    Because no versions of farm-haystack match >1.26.4,<2.0.0
+     and farm-haystack (1.26.4) depends on transformers (>=4.46,<5.0), farm-haystack (>=1.26.4,<2.0.0) requires transformers (>=4.46,<5.0).
+    And because transformers[onnxruntime,optuna,sentencepiece,sklearn,tf,torch,vision] (4.33.3) depends on transformers (4.33.3), farm-haystack (>=1.26.4,<2.0.0) is incompatible with transformers[onnxruntime,optuna,sentencepiece,sklearn,tf,torch,vision] (4.33.3).
+    So, because book-nlp-with-transformers depends on both transformers[onnxruntime,optuna,sentencepiece,sklearn,tf,torch,vision] (4.33.3) and farm-haystack (^1.26.4), version solving failed.
+    ```
+
+    farm-haystack 1.26.4 버전이 transformers의 버전 4.46 이상, 5.0 미만을 요구하는데, 프로젝트에서 사용 중인 transformers[onnxruntime,optuna,sentencepiece,sklearn,tf,torch,vision] (4.33.3)이 transformers 4.33.3 버전을 사용하고 있기 때문에 발생하는 문제입니다.
+
+    transformer=4.33.3과 호환되는 [farm-haystack](https://pypi.org/pypi/farm-haystack/1.22.1/json) 버전이 없다…
+
+    farm-haystack=1.22.1이 transformers=4.34.1을 지원하므로 4.33.3 → 4.34.1 로 업그레이드 함. datasets 버전이 충돌나서 2.14.7로 다운그레이드함.
+
+    ```bash
+    poetry add "farm-haystack=1.22.1"
+    ```
+
+    코드를 실행하니까 elasticsearch 클라이언트를 못찾아서 아래와 같이 수정함
+
+    ```bash
+    farm-haystack = {version = "1.22.1", extras = ["elasticsearch7"]}
+    ```
+
+3. docker로 실행한 es가 띄우면 죽음 (`TODO`)
+
+    ![image.png](attachment:f3dab9a3-234f-408a-aaa5-d1845544c637:image.png)
 
 </br>
 
 # Setup - Window 11 (실패)
 
 ## 요약
+
 Windows 11에서 Rtx3090으로 tensorflow GPU 사용을 할 수 없어서 tensorflow GPU를 사용하는 것은 불가능함.</br>
 참고자료를 따라서 CuDA, cuDNN, pytorch를 설치하고, tenserflow를 설치할 때 사용하는 그래픽카드를 미지원한다는 것을 알게됨.
 Rtx3090은 CUDA 11.8버전과 cuDNN 8.6, 8.7 버전과 호환됨</br>
@@ -395,29 +572,35 @@ tensorflow는 [Windows](https://www.tensorflow.org/install/source_windows?hl=ko&
 CUDA 11.8 버전을 사용하려면 Linux/Mac OS 사용해야함.
 
 ## 참고자료
+
 - [Pytorch 설치 - CUDA Toolkit, cuDNN 설치](https://stat-thon.tistory.com/104) :  CUDA Toolkit, cuDNN 다운로드 방법
+
   ```
   nvcc --version # CUDA Toolkit 버전 확인
   ```
+
 - [[ML][Windows 11] CUDA, cuDNN 설치](https://lonaru-burnout.tistory.com/16) : cuDNN 환경변수 설정 방법
 - [torch.cuda.is_available()이 False일 때](https://neulvo.tistory.com/466) : CuDA, cuDNN에 맞는 pyTorch를 설치하는 방법 ([설치 명령어 생성기](https://pytorch.org/))
+
   ```
   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
   ```
 
 ## 주의사항
+
 - GPU와 호환되는 CUDA Toolkit 버전으로 설치해야한다. ([호환 버전 확인](https://pytorch.org/get-started/locally/), [CUDA Toolkit Archive](https://developer.nvidia.com/cuda-toolkit-archive))
 
 ## 개념
+
 - CUDA : GPU에서 병렬 연산을 가능하게 해주는 플랫폼
 - cuDNN : 딥러닝 연산을 최적화한 CUDA 라이브러리. 따라서 딥러닝을 GPU에서 실행하려면 CUDA와 함께 cuDNN도 반드시 설치해야 합니다.
-
 
 ## 문제해결
 
 **아래와 같이 명령어 출력이 깨짐.**
+
 ```
 'head'��(��) ���� �Ǵ� �ܺ� ����, ������ �� �ִ� ���α׷�, �Ǵ� ��ġ ������ �ƴմϴ�.
 ```
-해결방법 ([참고](https://blog.naver.com/PostView.naver?blogId=ycpiglet&logNo=223611366810)) : 제어판 > 모든 제어판 항목 > 국가 또는 지역 > 관리자 옵션 > 시스템 로캘 변경 > "Beta: 세계 언어 지원을 위해 Unicode UTF-8 사용" 체크
 
+해결방법 ([참고](https://blog.naver.com/PostView.naver?blogId=ycpiglet&logNo=223611366810)) : 제어판 > 모든 제어판 항목 > 국가 또는 지역 > 관리자 옵션 > 시스템 로캘 변경 > "Beta: 세계 언어 지원을 위해 Unicode UTF-8 사용" 체크
