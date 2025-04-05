@@ -256,6 +256,7 @@ tensorflow와 torch가 의존하는 typing-extensions 버전 충돌 문제 해�
     - [pyTorch==2.6.0](https://pypi.org/pypi/torch/2.6.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions>=4.10.0",
     - [tensoflow==2.13.0](https://pypi.org/pypi/tensorflow/2.13.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (<4.6.0,>=3.6.6)",
     - [tensorflow==2.14.0](https://pypi.org/pypi/tensorflow/2.14.0/json)에서 요구하는 typing-extensions버전은 "typing-extensions (>=3.6.6)",
+![image](https://github.com/user-attachments/assets/854bf5a1-af04-419d-8982-b57652b3bf47)
 
 
 참고
