@@ -167,6 +167,10 @@ prompt_context() {
 CUDA 11.8을 선택한 이유 파이토치
 cuDNN 8.7을 선택한 이유 텐서플로우
 
+![image](https://github.com/user-attachments/assets/d690e21f-94a4-4596-a2ab-39b11e25afbc)
+![image](https://github.com/user-attachments/assets/f567662e-357c-4dd9-9f7f-479b0bf0717f)
+
+
 
 ### 3. CUDA Toolkit 11.8 설치
 ```sh
