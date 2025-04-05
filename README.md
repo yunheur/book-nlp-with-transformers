@@ -13,84 +13,6 @@
 후속작업
 - 윈도우에 설치한 프로그램 제거
 
-관리다 권한의 터미널(PowerShell)에서 wsl2 설치 ([공식 설치 가이드](https://learn.microsoft.com/ko-kr/windows/wsl/install))
-```
-wsl --install
-```
-
-zsh 설치 및 설정
-```sh
-# ~/.zshrc
-...
-# zsh apperence
-prompt_context() {
-  if [[ "$USERNAME" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
-    prompt_segment black white "%(!.%{%F{yellow}%}.)%n@%m"
-  fi
-}
-```
-
-CUDA Toolkit 11.8 설치 (RTX3090)
-```sh
-# CPU 아키텍처 확인
-uname -m
-```
-[CUDA Toolkit 11.8 Downloads](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local)에서 명령어 대로 설치
-```sh
-# libtinfo5 수동 설치 (Ubuntu 22.04 이상)
-$ wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
-$ sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
-# cuda 설치
-$ wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
-$ sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
-$ wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-wsl-ubuntu-11-8-local_11.8.0-1_amd64.deb
-$ sudo dpkg -i cuda-repo-wsl-ubuntu-11-8-local_11.8.0-1_amd64.deb
-$ sudo cp /var/cuda-repo-wsl-ubuntu-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
-$ sudo apt-get update
-$ sudo apt-get -y install cuda
-```
-```sh
-# cuda 버전 확인
-$ ls /usr/local/ | grep cuda
-
-# ~/.zshrc에 추가
-...
-export PATH=/usr/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
-
-$ source ~/.zshrc
-
-# CUDA Toolkit 버전 확인
-$ nvcc --version
-```
-
-cuDNN 8.6 설치
-[cnDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)에서 CUDA Toolkit 버전과 호환되는 것을 다운로드한다.
-```sh
-$ sudo apt-get install zlib1g
-$ tar -xvf cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz
-# /usr/local/cuda 경로로 파일 복사
-$ sudo cp cudnn-*-archive/include/cudnn*.h /usr/local/cuda/include 
-$ sudo cp -P cudnn-*-archive/lib/libcudnn* /usr/local/cuda/lib64 
-$ sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
-#  설치된 cuDNN 버전 확인
-$ cat /usr/local/cuda/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
-#define CUDNN_MAJOR 8
-#define CUDNN_MINOR 6
-#define CUDNN_PATCHLEVEL 0
-```
-
-일부 종속성 업데이트
-```
-$ sudo apt update
-$ sudo apt upgrade
-```
-
-참고
-- [WSL2에 CUDA 설치하는 방법](https://webnautes.tistory.com/1848)
-- [ammarsufyan/How to install CUDA-11.8 and CUDNN-8.6 for TensorFlow-2.13 in WSL2-Ubuntu-22.04-LTS.md](https://gist.github.com/ammarsufyan/51dd12d9471eb73b2348d373b605b45a)
-- [[Linux] Ubuntu 22.04 NVIDIA 드라이버 + CUDA + cuDNN 설치하기](https://starlane.tistory.com/1)
-
 
 Miniconda 설치
 
@@ -211,19 +133,115 @@ jupyter의 --paths 옵션을 사용하면 주피터 노트북이 참조하는 �
 wsl2 성능 cpu와 ram을 최대치로 쓸 수 있게 변경
 https://kangmanjoo.tistory.com/56
 
-# Setup - Window 11
+# Setup - Ubuntu 24.04
+
+## 요약
+
+wsl2로 Ubuntu를 설치하여 CUDA 11.8버전과 cuDNN 8.7 버전을 설치했고, python 3.10 버전에서 poetry로 패키지 버전을 맞춰서 예제를 실행하는데 성공함.</br>
+pyenv & poetry를 사용한 이유는 miniconda를 설치 후 예제에서 사용하는 패키지를 conda와 pip 명령어로 설치했는데 버전 관리가 안되서 챕터별 예제를 돌릴 때마다 버전 충돌이 남</br>
+
+## 설치과정
+
+### 1. wsl2 설치
+관리자 권한의 터미널(PowerShell)에서 wsl2 설치 ([공식 설치 가이드](https://learn.microsoft.com/ko-kr/windows/wsl/install))
+```
+wsl --install
+```
+
+zsh 설치 및 설정
+```sh
+# ~/.zshrc
+...
+# zsh apperence
+prompt_context() {
+  if [[ "$USERNAME" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+    prompt_segment black white "%(!.%{%F{yellow}%}.)%n@%m"
+  fi
+}
+```
+
+### 2. 그래픽카드를 지원하는 CUDA, cuDNN 버전 확인
+
+[CUDA 위키피디아](https://en.wikipedia.org/wiki/CUDA#GPUs_supported)에서 RTX 3090을 검색하니, cuDNN은 8.6과 8.7버전을 지원하고 CUDA는 11.8 버전을 
+
+CUDA 11.8을 선택한 이유 파이토치
+cuDNN 8.7을 선택한 이유 텐서플로우
+
+
+### 3. CUDA Toolkit 11.8 설치
+```sh
+# CPU 아키텍처 확인
+uname -m
+```
+[CUDA Toolkit 11.8 Downloads](https://developer.nvidia.com/cuda-11-8-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=WSL-Ubuntu&target_version=2.0&target_type=deb_local)에서 명령어 대로 설치
+```sh
+# libtinfo5 수동 설치 (Ubuntu 22.04 이상)
+$ wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb
+$ sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+# cuda 설치
+$ wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin
+$ sudo mv cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600
+$ wget https://developer.download.nvidia.com/compute/cuda/11.8.0/local_installers/cuda-repo-wsl-ubuntu-11-8-local_11.8.0-1_amd64.deb
+$ sudo dpkg -i cuda-repo-wsl-ubuntu-11-8-local_11.8.0-1_amd64.deb
+$ sudo cp /var/cuda-repo-wsl-ubuntu-11-8-local/cuda-*-keyring.gpg /usr/share/keyrings/
+$ sudo apt-get update
+$ sudo apt-get -y install cuda
+```
+```sh
+# cuda 버전 확인
+$ ls /usr/local/ | grep cuda
+
+# ~/.zshrc에 추가
+...
+export PATH=/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+$ source ~/.zshrc
+
+# CUDA Toolkit 버전 확인
+$ nvcc --version
+```
+
+cuDNN 8.6 설치
+[cnDNN Archive](https://developer.nvidia.com/rdp/cudnn-archive)에서 CUDA Toolkit 버전과 호환되는 것을 다운로드한다.
+```sh
+$ sudo apt-get install zlib1g
+$ tar -xvf cudnn-linux-x86_64-8.6.0.163_cuda11-archive.tar.xz
+# /usr/local/cuda 경로로 파일 복사
+$ sudo cp cudnn-*-archive/include/cudnn*.h /usr/local/cuda/include 
+$ sudo cp -P cudnn-*-archive/lib/libcudnn* /usr/local/cuda/lib64 
+$ sudo chmod a+r /usr/local/cuda/include/cudnn*.h /usr/local/cuda/lib64/libcudnn*
+#  설치된 cuDNN 버전 확인
+$ cat /usr/local/cuda/include/cudnn_version.h | grep CUDNN_MAJOR -A 2
+#define CUDNN_MAJOR 8
+#define CUDNN_MINOR 6
+#define CUDNN_PATCHLEVEL 0
+```
+
+일부 종속성 업데이트
+```
+$ sudo apt update
+$ sudo apt upgrade
+```
+
+참고
+- [WSL2에 CUDA 설치하는 방법](https://webnautes.tistory.com/1848)
+- [ammarsufyan/How to install CUDA-11.8 and CUDNN-8.6 for TensorFlow-2.13 in WSL2-Ubuntu-22.04-LTS.md](https://gist.github.com/ammarsufyan/51dd12d9471eb73b2348d373b605b45a)
+- [[Linux] Ubuntu 22.04 NVIDIA 드라이버 + CUDA + cuDNN 설치하기](https://starlane.tistory.com/1)
+
+
+
+
+# Setup - Window 11 (실패)
 
 ## 요약
 Windows 11에서 Rtx3090으로 tensorflow GPU 사용을 할 수 없어서 tensorflow GPU를 사용하는 것은 불가능함.</br>
+참고자료를 따라서 CuDA, cuDNN, pytorch를 설치하고, tenserflow를 설치할 때 사용하는 그래픽카드를 미지원한다는 것을 알게됨.
 Rtx3090은 CUDA 11.8버전과 cuDNN 8.6, 8.7 버전과 호환됨</br>
 tensorflow는 [Windows](https://www.tensorflow.org/install/source_windows?hl=ko&_gl=1*1wieu6p*_up*MQ..*_ga*MTkxNDA4Mjg0NS4xNzQzODQwNzg2*_ga_W0YLR4190T*MTc0Mzg0MDc4NS4xLjAuMTc0Mzg0MDc4NS4wLjAuMA..#gpu)에서 GPU지원은 2.10이하 버전(CUDA 버전은 11.2)까지만 지원함. </br>
 CUDA 11.8 버전을 사용하려면 Linux/Mac OS 사용해야함.
 
-## 메모
-
-아래 내용을 참고하여, CuDA, cuDNN, pytorch를 설치하고, tenserflow를 설치할 때 사용하는 그래픽카드를 미지원한다는 것을 알게됨.
-
-### 참고자료
+## 참고자료
 - [Pytorch 설치 - CUDA Toolkit, cuDNN 설치](https://stat-thon.tistory.com/104) :  CUDA Toolkit, cuDNN 다운로드 방법
   ```
   nvcc --version # CUDA Toolkit 버전 확인
@@ -234,15 +252,15 @@ CUDA 11.8 버전을 사용하려면 Linux/Mac OS 사용해야함.
   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
   ```
 
-### 주의사항
+## 주의사항
 - GPU와 호환되는 CUDA Toolkit 버전으로 설치해야한다. ([호환 버전 확인](https://pytorch.org/get-started/locally/), [CUDA Toolkit Archive](https://developer.nvidia.com/cuda-toolkit-archive))
 
-### 개념
+## 개념
 - CUDA : GPU에서 병렬 연산을 가능하게 해주는 플랫폼
 - cuDNN : 딥러닝 연산을 최적화한 CUDA 라이브러리. 따라서 딥러닝을 GPU에서 실행하려면 CUDA와 함께 cuDNN도 반드시 설치해야 합니다.
 
 
-### 문제해결
+## 문제해결
 
 **아래와 같이 명령어 출력이 깨짐.**
 ```
