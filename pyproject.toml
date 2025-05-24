@@ -67,7 +67,7 @@ psutil = "^7.0.0"
 optuna = "^4.2.1"
 onnxruntime = "^1.21.0"
 onnx = "^1.17.0"
-faiss-cpu = "1.7.4"
+faiss-gpu-cu11 = "^1.11.0"
 
 [tool.poetry.group.dev.dependencies]
 notebook = "^7.3.3"
